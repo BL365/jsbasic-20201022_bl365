@@ -3,7 +3,6 @@ import createElement from '../../assets/lib/create-element.js';
 export default class StepSlider {
   constructor({ steps, value = 0 }) {
     this.value = value
-    this.prevValue = value
     this.steps = steps
 
     this.render(steps)
@@ -54,7 +53,6 @@ export default class StepSlider {
     let numberSegment = clickPositionPercent / segmentPercent
     numberSegment = numberSegment.toFixed()
 
-    this.prevValue = this.value
     this.value = numberSegment
 
     let leftPercent = numberSegment * segmentPercent
@@ -73,7 +71,10 @@ export default class StepSlider {
     let sliderSteps = this.sub('steps')
     let listSpan = sliderSteps.children
 
-    listSpan[this.prevValue].classList.remove('slider__step-active')
+    if(this.sub('step-active')) {
+      this.sub('step-active').classList.remove('slider__step-active')
+    }
+
     listSpan[this.value].classList.add('slider__step-active')
   }
 
@@ -88,7 +89,7 @@ export default class StepSlider {
 
   generCustomEvent() {
     this.elem.dispatchEvent(new CustomEvent('slider-change', { // имя события должно быть именно 'slider-change'
-      detail: this.value, // значение 0, 1, 2, 3, 4
+      detail: Number(this.value), // значение 0, 1, 2, 3, 4
       bubbles: true // событие всплывает - это понадобится в дальнейшем
     }))
   }
